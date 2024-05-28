@@ -1,0 +1,55 @@
+     1                                 %line 1+1 uppercase.s
+     2                                 
+     3                                 
+     4                                 
+     5                                 [section .data]
+     6                                 
+     7 00000000 546865204361742069-    string: db "The Cat in the Hat.", 0
+     8 00000000 6E2074686520486174-
+     9 00000000 2E00               
+    10                                 
+    11                                 [section .text]
+    12                                 
+    13                                 [global _start]
+    14                                 _start:
+    15 00000000 48C7C7[00000000]        mov rdi, string
+    16                                 
+    17                                 begin_while:
+    18 00000007 803F00                  cmp byte [rdi], 0
+    19 0000000A 7416                    je end_while
+    20                                 
+    21                                 
+    22                                 
+    23                                 
+    24                                 
+    25                                 
+    26 0000000C 803F61                  cmp byte [rdi], 'a'
+    27 0000000F 0F93D0                  setae al
+    28 00000012 803F7A                  cmp byte [rdi], 'z'
+    29 00000015 0F96D3                  setbe bl
+    30 00000018 20D8                    and al, bl
+    31                                 
+    32 0000001A 7401                    jz endif
+    33                                 
+    34                                 
+    35 0000001C 802F20                  sub byte [rdi], ('a' - 'A')
+    36                                 
+    37                                 endif:
+    38 0000001F 48FFC7                  inc rdi
+    39 00000022 EBE1                    jmp begin_while
+    40                                 
+    41                                 end_while:
+    42                                 
+    43 00000024 4881EF[00000000]        sub rdi, string
+    44 0000002B 4889FA                  mov rdx, rdi
+    45                                 
+    46 0000002E 48C7C001000000          mov rax, 1
+    47 00000035 48C7C701000000          mov rdi, 1
+    48 0000003C 48C7C6[00000000]        mov rsi, string
+    49 00000043 0F05                    syscall
+    50                                 
+    51 00000045 48C7C03C000000          mov rax, 60
+    52 0000004C 48C7C700000000          mov rdi, 0
+    53 00000053 0F05                    syscall
+    54                                 
+    55                                 

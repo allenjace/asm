@@ -1,0 +1,39 @@
+     1                                 %line 1+1 uppercasenul.s
+     2                                 [section .data]
+     3                                 
+     4 00000000 68656C6C6F20692061-    string: db "hello i am allen! ", 10
+     5 00000000 6D20616C6C656E2120-
+     6 00000000 0A                 
+     7                                 
+     8                                 [section .text]
+     9                                 
+    10                                 [global _start]
+    11                                 _start:
+    12                                 
+    13 00000000 48C7C7[00000000]        mov rdi, string
+    14 00000007 E8FBFFFFFF              call to_upper
+    15                                 
+    16                                 
+    17                                 to_upper:
+    18 0000000C 48C7C000000000          mov rax, 0
+    19                                 
+    20                                 .begin_loop:
+    21 00000013 803F00                  cmp byte [rdi], 0
+    22 00000016 7413                    je .end_loop
+    23                                 
+    24 00000018 803F61                  cmp byte [rdi], 'a'
+    25 0000001B 7209                    jnae .continue
+    26 0000001D 803F7A                  cmp byte [rdi], 'z'
+    27 00000020 7704                    jnbe .continue
+    28                                 
+    29                                 
+    30                                 
+    31 00000022 802F20                  sub byte[rdi], 'a' - 'A'
+    32 00000025 48FFC0                  inc rax
+    33                                 
+    34                                 .continue:
+    35 00000028 48FFC7                  inc rdi
+    36 0000002B EBE4                    jmp .begin_loop
+    37                                 
+    38                                 .end_loop:
+    39 0000002D C3                      ret

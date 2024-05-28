@@ -1,0 +1,94 @@
+     1                                 %line 1+1 groupassign1.s
+     2                                 [section .data]
+     3                                 
+     4 00000000 0000000000000000       zero: dq 0.0
+     5 00000008 000000000000F03F       one: dq 1.0
+     6 00000010 0000000000000040       two: dq 2.0
+     7 00000018 0000000000001040       four: dq 4.0
+     8 00000020 000000000000F0BF       negone: dq -1.0
+     9 00000028 BBBDD7D9DF7CDB3D       limit: dq 0.0000000001
+    10                                 
+    11 00000030 25660A00               format: db "%f", 10, 0
+    12                                 
+    13                                 [section .text]
+    14                                 
+    15                                 [extern printf]
+    16                                 
+    17                                 [global main]
+    18                                 main:
+    19                                 
+    20 00000000 55                      push rbp
+    21 00000001 4889E5                  mov rbp, rsp
+    22                                 
+    23                                 
+    24 00000004 F20F100425[00000000]      movsd xmm0, qword [limit]
+    25 0000000D E812000000              call compute_pi
+    26                                 
+    27                                 
+    28                                 
+    29 00000012 48C7C7[00000000]        mov rdi, format
+    30 00000019 B001                    mov al, 1
+    31 0000001B E8(F6FFFFFF)            call printf
+    32                                 
+    33 00000020 48C7C000000000          mov rax, 0
+    34 00000027 5D                      pop rbp
+    35 00000028 C3                      ret
+    36                                 
+    37                                 compute_pi:
+    38 00000029 55                      push rbp
+    39 0000002A 4889E5                  mov rbp, rsp
+    40                                 
+    41 0000002D 48C7C600000000          mov rsi, 0
+    42                                 
+    43                                 .loop:
+    44                                 
+    45 00000034 F2480F2ACE              cvtsi2sd xmm1, rsi
+    46 00000039 F20F590C25[00000000]      mulsd xmm1, qword[two]
+    47 00000042 F20F580C25[00000000]      addsd xmm1, qword[two]
+    48                                 
+    49                                 
+    50 0000004B F20F10D1                movsd xmm2, xmm1
+    51 0000004F F20F581425[00000000]      addsd xmm2, qword [one]
+    52                                 
+    53                                 
+    54 00000058 F20F10D9                movsd xmm3, xmm1
+    55 0000005C F20F581C25[00000000]      addsd xmm3, qword [two]
+    56                                 
+    57                                 
+    58 00000065 F20F102425[00000000]      movsd xmm4, qword [four]
+    59 0000006E F20F59CA                mulsd xmm1, xmm2
+    60 00000072 F20F59CB                mulsd xmm1, xmm3
+    61 00000076 F20F5EE1                divsd xmm4, xmm1
+    62                                 
+    63                                 
+    64 0000007A 48F7C601000000          test rsi, 1
+    65 00000081 7407                    jz .alternating_coefficient
+    66 00000083 F20F592425[00000000]      mulsd xmm4, qword [negone]
+    67                                 
+    68                                 .alternating_coefficient:
+    69 0000008C F20F58C4                addsd xmm0, xmm4
+    70                                 
+    71 00000090 48FFC6                  inc rsi
+    72                                 
+    73 00000093 F2480F2ACE              cvtsi2sd xmm1, rsi
+    74 00000098 F20F590C25[00000000]      mulsd xmm1, qword [two]
+    75 000000A1 F20F580C25[00000000]      addsd xmm1, qword [two]
+    76 000000AA F20F10D1                movsd xmm2, xmm1
+    77 000000AE F20F581425[00000000]      addsd xmm2, qword [one]
+    78 000000B7 F20F10D9                movsd xmm3, xmm1
+    79 000000BB F20F581C25[00000000]      addsd xmm3, qword [two]
+    80 000000C4 F20F102425[00000000]      movsd xmm4, qword [four]
+    81 000000CD F20F59CA                mulsd xmm1, xmm2
+    82 000000D1 F20F59CB                mulsd xmm1, xmm3
+    83 000000D5 F20F5EE1                divsd xmm4, xmm1
+    84                                 
+    85 000000D9 660F2F2425[00000000]      comisd xmm4, qword [limit]
+    86 000000E2 0F8746FFFFFF            ja .loop
+    87                                 
+    88 000000E8 F20F580425[00000000]      addsd xmm0, qword[two]
+    89 000000F1 F20F580425[00000000]      addsd xmm0, qword[one]
+    90                                 
+    91                                 
+    92                                 
+    93 000000FA 5D                      pop rbp
+    94 000000FB C3                      ret

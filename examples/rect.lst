@@ -1,0 +1,48 @@
+     1                                 %line 1+1 rect.s
+     2                                 
+     3                                 
+     4                                 
+     5                                 [section .data]
+     6                                 
+     7 00000000 00<rept>               buffer: times 10000 db 0
+     8                                 
+     9                                 [section .text]
+    10                                 [global _start]
+    11                                 _start:
+    12 00000000 48C7C710000000          mov rdi, 16
+    13 00000007 48C7C60D000000          mov rsi, 13
+    14                                 
+    15 0000000E 4989F8                  mov r8, rdi
+    16 00000011 4989F1                  mov r9, rsi
+    17 00000014 49C7C400000000          mov r12, 0
+    18 0000001B 49C7C500000000          mov r13, 0
+    19 00000022 48C7C1[00000000]        mov rcx, buffer
+    20                                 
+    21                                 outer:
+    22 00000029 49C7C500000000          mov r13, 0
+    23                                 
+    24                                 inner:
+    25 00000030 C6012A                  mov byte [rcx], '*'
+    26 00000033 48FFC1                  inc rcx
+    27                                 
+    28 00000036 49FFC5                  inc r13
+    29 00000039 4D39C5                  cmp r13, r8
+    30 0000003C 7CF0                    jl inner
+    31                                 
+    32 0000003E C6010A                  mov byte [rcx], 10
+    33 00000041 48FFC1                  inc rcx
+    34                                 
+    35 00000044 49FFC4                  inc r12
+    36 00000047 4D39CC                  cmp r12, r9
+    37 0000004A 7CDB                    jl outer
+    38                                 
+    39 0000004C 4889CA                  mov rdx, rcx
+    40 0000004F 4881EA[00000000]        sub rdx, buffer
+    41 00000056 48C7C001000000          mov rax, 1
+    42 0000005D 48C7C701000000          mov rdi, 1
+    43 00000064 48C7C6[00000000]        mov rsi, buffer
+    44 0000006B 0F05                    syscall
+    45                                 
+    46 0000006D 48C7C03C000000          mov rax, 60
+    47 00000074 48C7C700000000          mov rdi, 0
+    48 0000007B 0F05                    syscall

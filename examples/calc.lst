@@ -1,0 +1,59 @@
+     1                                 %line 1+1 calc.s
+     2                                 
+     3                                 
+     4                                 
+     5                                 [section .data]
+     6                                 
+     7 00000000 2B2D2A2F25             jmp_chars: db '+', '-', '*', '/', '%'
+     8 00000005 [0000000000000000]-    jmp_tgts: dq case_pl, case_mi, case_tm, case_dv, case_rm
+     9 00000005 [0000000000000000]-
+    10 00000005 [0000000000000000]-
+    11 00000005 [0000000000000000]-
+    12 00000005 [0000000000000000] 
+    13                                 case_count: equ ($ - jmp_tgts) / 8
+    14                                 
+    15                                 [section .text]
+    16                                 [global _start]
+    17                                 _start:
+    18 00000000 48C7C70A000000          mov rdi, 10
+    19 00000007 48C7C607000000          mov rsi, 7
+    20 0000000E B221                    mov dl, '!'
+    21                                 
+    22                                 
+    23 00000010 48C7C100000000          mov rcx, 0
+    24                                 begin_do:
+    25 00000017 3891[00000000]          cmp byte [jmp_chars + rcx], dl
+    26 0000001D 7409                    je found
+    27                                 
+    28 0000001F 48FFC1                  inc rcx
+    29 00000022 4883F905                cmp rcx, case_count
+    30 00000026 75ED                    jne begin_do
+    31                                 
+    32                                 
+    33 00000028 EB12                    jmp case_default
+    34                                 
+    35                                 found:
+    36                                 
+    37 0000002A 488B04CD[00000000]      mov rax, qword [jmp_tgts + 8*rcx]
+    38 00000032 FFE0                    jmp rax
+    39                                 
+    40                                 case_pl:
+    41 00000034 4801F7                  add rdi, rsi
+    42 00000037 EB0C                    jmp end_switch
+    43                                 case_mi:
+    44 00000039 4829F7                  sub rdi, rsi
+    45 0000003C EB07                    jmp end_switch
+    46                                 case_tm:
+    47                                 case_dv:
+    48                                 case_rm:
+    49                                 case_default:
+    50 0000003E 48C7C700000000          mov rdi, 0
+    51 00000045 EBFE                    jmp end_switch
+    52                                 
+    53                                 end_switch:
+    54                                 
+    55 00000047 48C7C03C000000          mov rax, 60
+    56 0000004E 48C7C700000000          mov rdi, 0
+    57 00000055 0F05                    syscall
+    58                                 
+    59                                 

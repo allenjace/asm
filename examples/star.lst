@@ -1,0 +1,45 @@
+     1                                 %line 1+1 star.s
+     2                                 [section .data]
+     3                                 
+     4 00000000 0A                     newline: db 10
+     5 00000001 2A                     star: db '*'
+     6                                 
+     7                                 [section .text]
+     8                                 
+     9                                 [global _start]
+    10                                 _start:
+    11                                 
+    12                                 print_stars:
+    13 00000000 48C7C605000000          mov rsi, 5
+    14 00000007 4989F4                  mov r12, rsi
+    15                                 
+    16                                 .while1:
+    17 0000000A 4983FC00                cmp r12, 0
+    18 0000000E 744B                    je .done
+    19                                 
+    20                                 
+    21 00000010 4D89E5                  mov r13, r12
+    22                                 
+    23                                  .do:
+    24 00000013 48C7C001000000          mov rax, 1
+    25 0000001A 48C7C701000000          mov rdi, 1
+    26 00000021 48C7C6[00000000]        mov rsi, star
+    27 00000028 48C7C201000000          mov rdx, 1
+    28 0000002F 0F05                    syscall
+    29                                 
+    30 00000031 49FFCD                  dec r13
+    31 00000034 4983FD00                cmp r13, 0
+    32 00000038 75D7                    jne .do
+    33                                 
+    34                                 
+    35 0000003A 48C7C001000000          mov rax, 1
+    36 00000041 48C7C701000000          mov rdi, 1
+    37 00000048 48C7C6[00000000]        mov rsi, newline
+    38 0000004F 48C7C201000000          mov rdx, 1
+    39 00000056 0F05                    syscall
+    40                                 
+    41 00000058 49FFCC                  dec r12
+    42 0000005B EBAB                    jmp .while1
+    43                                 
+    44                                 .done
+    45 0000005D C3                      ret

@@ -1,0 +1,60 @@
+     1                                 %line 1+1 assignment1.s
+     2                                 [section .data]
+     3                                 
+     4 00000000 576861742069732079-    prompt: db "What is your name? "
+     5 00000000 6F7572206E616D653F-
+     6 00000000 20                 
+     7                                 prompt_len: equ $-prompt
+     8                                 
+     9 00000013 21<rept>               buffer: times 255 db '!'
+    10                                 
+    11 00000112 48656C6C6F2C20         resp1: db "Hello, "
+    12                                 resp1_len: equ $-resp1
+    13 00000119 2C206E69636520746F-    resp2: db ", nice to meet you!", 10
+    14 00000119 206D65657420796F75-
+    15 00000119 210A               
+    16                                 resp2_len: equ $-resp2
+    17                                 
+    18                                 [section .text]
+    19                                 
+    20                                 [global _start]
+    21                                 _start:
+    22                                 
+    23 00000000 48C7C001000000          mov rax, 1
+    24 00000007 48C7C701000000          mov rdi, 1
+    25 0000000E 48C7C6[00000000]        mov rsi, prompt
+    26 00000015 48BA13000000000000-     mov rdx, prompt_len
+    27 00000015 00                 
+    28 0000001F 0F05                    syscall
+    29                                 
+    30 00000021 48C7C000000000          mov rax, 0
+    31 00000028 48C7C700000000          mov rdi, 0
+    32 0000002F 48C7C6[00000000]        mov rsi, buffer
+    33 00000036 48C7C2FF000000          mov rdx, 255
+    34 0000003D 49C7C200000000          mov r10, 0
+    35 00000044 0F05                    syscall
+    36                                 
+    37 00000046 4989C2                  mov r10, rax
+    38 00000049 48C7C001000000          mov rax, 1
+    39 00000050 48C7C701000000          mov rdi, 1
+    40 00000057 48C7C6[00000000]        mov rsi, resp1
+    41 0000005E 48BA05000000000000-     mov rdx, resp1_len-2
+    42 0000005E 00                 
+    43 00000068 0F05                    syscall
+    44                                 
+    45 0000006A 48C7C001000000          mov rax, 1
+    46 00000071 48C7C701000000          mov rdi, 1
+    47 00000078 48C7C6[FFFFFFFF]        mov rsi, buffer-1
+    48 0000007F 4C89D2                  mov rdx, r10
+    49 00000082 0F05                    syscall
+    50                                 
+    51 00000084 48C7C001000000          mov rax, 1
+    52 0000008B 48C7C701000000          mov rdi, 1
+    53 00000092 48C7C6[00000000]        mov rsi, resp2
+    54 00000099 48BA14000000000000-     mov rdx, resp2_len
+    55 00000099 00                 
+    56 000000A3 0F05                    syscall
+    57                                 
+    58 000000A5 48C7C03C000000          mov rax, 60
+    59 000000AC 4831FF                  xor rdi, rdi
+    60 000000AF 0F05                    syscall

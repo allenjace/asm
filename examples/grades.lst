@@ -1,0 +1,70 @@
+     1                                 %line 1+1 grades.s
+     2                                 
+     3                                 
+     4                                 
+     5                                 [section .data]
+     6                                 
+     7 00000000 456E74657220677261-    prompt: db "Enter grades: ", 0
+     8 00000000 6465733A2000       
+     9 0000000F 20256C6400             scanf_fmt: db " %ld", 0
+    10 00000014 486967682F6C6F773A-    results: db "High/low: %ld/%ld", 10, 0
+    11 00000014 20256C642F256C640A-
+    12 00000014 00                 
+    13                                 
+    14                                 [section .text]
+    15                                 
+    16                                 [extern printf]
+    17                                 [extern scanf]
+    18                                 [global main]
+    19                                 
+    20                                 main:
+    21 00000000 55                      push rbp
+    22 00000001 4889E5                  mov rbp, rsp
+    23                                 
+    24                                 
+    25 00000004 4883EC18                sub rsp, 8*3
+    26                                 
+    27                                 
+    28 00000008 4883EC08                sub rsp, 8
+    29                                 
+    30                                 
+    31 0000000C 48C7C7[00000000]        mov rdi, prompt
+    32 00000013 E8(F6FFFFFF)            call printf
+    33                                 
+    34                                 begin:
+    35                                 
+    36 00000018 48C7C7[00000000]        mov rdi, scanf_fmt
+    37 0000001F 4889EE                  mov rsi, rbp
+    38 00000022 4883EE18                sub rsi, 24
+    39 00000026 E8(F6FFFFFF)            call scanf
+    40                                 
+    41                                 
+    42 0000002B 48837DE8FF              cmp qword [rbp-24], -1
+    43 00000030 7418                    je end_loop
+    44                                 
+    45                                 
+    46 00000032 4C8B65E8                mov r12, qword [rbp-24]
+    47 00000036 4C3B65F8                cmp r12, qword [rbp-8]
+    48 0000003A 7E02                    jng endif1
+    49 0000003C 4C8965F8                mov qword [rbp-8], r12
+    50                                 endif1:
+    51                                 
+    52                                 
+    53 00000040 4C3B65F0                cmp r12, qword [rbp - 16]
+    54 00000044 7D02                    jnl endif2
+    55 00000046 4C8965F0                mov qword [rbp-16], r12
+    56                                 endif2:
+    57                                 
+    58 0000004A EBCA                    jmp begin
+    59                                 end_loop:
+    60                                 
+    61                                 
+    62 0000004C 48C7C7[00000000]        mov rdi, results
+    63 00000053 488B75F8                mov rsi, qword [rbp-8]
+    64 00000057 488B55F0                mov rdx, qword [rbp-16]
+    65 0000005B E8(F6FFFFFF)            call printf
+    66                                 
+    67 00000060 4883C420                add rsp, 8*4
+    68 00000064 5D                      pop rbp
+    69 00000065 48C7C000000000          mov rax, 0
+    70 0000006C C3                      ret
